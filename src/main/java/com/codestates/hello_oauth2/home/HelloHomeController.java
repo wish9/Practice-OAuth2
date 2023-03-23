@@ -3,7 +3,9 @@ package com.codestates.hello_oauth2.home;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
+import org.springframework.security.oauth2.client.annotation.RegisteredOAuth2AuthorizedClient;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
@@ -34,23 +36,36 @@ public class HelloHomeController {
 //        return "hello-oauth2";
 //    }
 
-    private final OAuth2AuthorizedClientService authorizedClientService;
+//    private final OAuth2AuthorizedClientService authorizedClientService;
+//
+//    // OAuth2AuthorizedClientService를 DI 받는 방법
+//    public HelloHomeController(OAuth2AuthorizedClientService authorizedClientService) {
+//        this.authorizedClientService = authorizedClientService;
+//    }
+//
+//    @GetMapping("/hello-oauth2")
+//    public String home(Authentication authentication) {
+//        var authorizedClient = authorizedClientService.loadAuthorizedClient("google", authentication.getName()); // loadAuthorizedClient()를 이용해 OAuth2AuthorizedClient 조회
+//
+//        OAuth2AccessToken accessToken = authorizedClient.getAccessToken(); // OAuth2AccessToken 객체 얻기
+//        System.out.println("Access Token Value: " + accessToken.getTokenValue());  //  Access Token의 문자열을 출력
+//        System.out.println("Access Token Type: " + accessToken.getTokenType().getValue());  //  Token의 타입을 출력
+//        System.out.println("Access Token Scopes: " + accessToken.getScopes());       // 토큰으로 접근할 수 있는 리소스의 범위 목록을 출력
+//        System.out.println("Access Token Issued At: " + accessToken.getIssuedAt());    // 토큰의 발행일시를 출력
+//        System.out.println("Access Token Expires At: " + accessToken.getExpiresAt());  // 토큰의 만료일시를 출력
+//
+//        return "hello-oauth2";
+//    }
 
-    // OAuth2AuthorizedClientService를 DI 받는 방법
-    public HelloHomeController(OAuth2AuthorizedClientService authorizedClientService) {
-        this.authorizedClientService = authorizedClientService;
-    }
+    @GetMapping("/hello-oauth2") // OAuth2AuthorizedClient를 핸들러 메서드의 파라미터로 전달받는 방법
+    public String home(@RegisteredOAuth2AuthorizedClient("google") OAuth2AuthorizedClient authorizedClient) {
 
-    @GetMapping("/hello-oauth2")
-    public String home(Authentication authentication) {
-        var authorizedClient = authorizedClientService.loadAuthorizedClient("google", authentication.getName()); // loadAuthorizedClient()를 이용해 OAuth2AuthorizedClient 조회
-
-        OAuth2AccessToken accessToken = authorizedClient.getAccessToken(); // OAuth2AccessToken 객체 얻기
-        System.out.println("Access Token Value: " + accessToken.getTokenValue());  //  Access Token의 문자열을 출력
-        System.out.println("Access Token Type: " + accessToken.getTokenType().getValue());  //  Token의 타입을 출력
-        System.out.println("Access Token Scopes: " + accessToken.getScopes());       // 토큰으로 접근할 수 있는 리소스의 범위 목록을 출력
-        System.out.println("Access Token Issued At: " + accessToken.getIssuedAt());    // 토큰의 발행일시를 출력
-        System.out.println("Access Token Expires At: " + accessToken.getExpiresAt());  // 토큰의 만료일시를 출력
+        OAuth2AccessToken accessToken = authorizedClient.getAccessToken();
+        System.out.println("Access Token Value: " + accessToken.getTokenValue());
+        System.out.println("Access Token Type: " + accessToken.getTokenType().getValue());
+        System.out.println("Access Token Scopes: " + accessToken.getScopes());
+        System.out.println("Access Token Issued At: " + accessToken.getIssuedAt());
+        System.out.println("Access Token Expires At: " + accessToken.getExpiresAt());
 
         return "hello-oauth2";
     }
