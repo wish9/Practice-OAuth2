@@ -1,6 +1,7 @@
 package com.codestates.hello_oauth2.home;
 
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
@@ -16,12 +17,18 @@ public class HelloHomeController {
 //        return "hello-oauth2"; // oauth2(구글) 인증 성공시에만 볼 수 있는 화면(hello-oauth2.html) 리턴
 //    }
 
-    @GetMapping("/hello-oauth2")  // Authentication 객체를 핸들러 메서드 파라미터로 전달받는 방법
-    public String home(Authentication authentication) {
-        var oAuth2User = (OAuth2User)authentication.getPrincipal();
-        System.out.println(oAuth2User);
-        System.out.println("User's email in Google: " + oAuth2User.getAttributes().get("email"));
+//    @GetMapping("/hello-oauth2")  // Authentication 객체를 핸들러 메서드 파라미터로 전달받는 방법
+//    public String home(Authentication authentication) {
+//        var oAuth2User = (OAuth2User)authentication.getPrincipal();
+//        System.out.println(oAuth2User);
+//        System.out.println("User's email in Google: " + oAuth2User.getAttributes().get("email"));
+//
+//        return "hello-oauth2";
+//    }
 
+    @GetMapping("/hello-oauth2")
+    public String home(@AuthenticationPrincipal OAuth2User oAuth2User) {  // @AuthenticationPrincipal 애너테이션을 이용해 OAuth2User를 파라미터로 전달받는 방법
+        System.out.println("User's email in Google: " + oAuth2User.getAttributes().get("email"));
         return "hello-oauth2";
     }
 }
